@@ -1,4 +1,6 @@
 // Business Logic
+var pressedKey = "";
+var access = false;
 
 function ComputerTerminal (status, name, buildingLocationNumber, roomNumber, locationX, locationY, type, questionArray, answerArray, success, failure) {
   this.status = status;
@@ -16,6 +18,8 @@ function ComputerTerminal (status, name, buildingLocationNumber, roomNumber, loc
 
 ComputerTerminal.prototype.verifyAnswer = function (answer) { // pass in the answer as array or string
   var compare = 0;
+  console.log("this answer is " + this.answerArray);
+  console.log("your answer is " + answer);
   for (var i=0; i < answer.length; i++) {
     if (answer[i] === this.answerArray[i]) { compare ++;}
   }
@@ -36,10 +40,10 @@ function Denizen(name, pic, greet, questions, answer1, answer2, answer3, items, 
   this.level = level; // if level is 5 then that's the CEO. You catch him and leave.
 }
 
-function testAnswer(myPrompt, x){
-  // if  (myPrompt.verifyAnswer(x)) { alert("It's true!"); }
-  if  (myPrompt.verifyAnswer(x)) { return true; } else { return false;}
-}
+// function testAnswer(myPrompt, x){
+//   // if  (myPrompt.verifyAnswer(x)) { alert("It's true!"); }
+//   if  (myPrompt.verifyAnswer(x)) { return true; } else { return false;}
+// }
 
 
 function getAnswer(myPrompt){
@@ -110,6 +114,9 @@ function drawKeypad(){
 function showQuery(someTerminal){
   var combo = "";
   var combo1 = "";
+  var colors = ["red", "green", "blue", "yellow"];
+  var answerColors = [];
+  var myColor = -1;
   if (someTerminal.type ==="colors") {
     for (var i = 0; i < someTerminal.questionArray.length; i++){
       // combo += someTerminal.questionArray[i] + "=";
@@ -128,13 +135,53 @@ function showQuery(someTerminal){
         $("#show"+i).css("background-color", "yellow");
       }
     }
+    var myButton = '<div class="col-md-2">' +
+      '<button class="btn btn-primary" name="myButton" type="button" id="myButton">Submit</button>' +
+    '</div>'; // type="submit"
+
+    $("#formLine").html(myButton);
+
+    $('#colorboxes').bind('click', function(event) {
+    // alert(event.target.id);
+      myColor++;
+      if (myColor > colors.length) { myColor = 0; }
+      // alert(event.target.id);
+      if (event.target.id.substring(0, 4) === "tell" && event.target.id.length > 4){
+        $("#" + event.target.id).css( "background-color", colors[myColor] );
+        // answerColors[event.target.id.substring(4, 1)-1] = colors[myColor];
+        // alert(event.target.id.substr(event.target.id.length - 1));
+        var x = event.target.id.substr(event.target.id.length - 1);
+        // alert("x = " + x);
+        answerColors[x-1] = colors[myColor];
+        console.log("The answer colors array is now: " + answerColors);
+      }
+    });
+
+    $('#myButton').bind('click', function(event) {
+      // alert(event.target.id);
+      // alert("answer colors: " + answerColors);
+      // alert("Some terminal's type is: " + someTerminal.type);
+      // alert("Some terminal's answer is: " + someTerminal.answerArray);
+      var ygody = someTerminal.verifyAnswer(answerColors);
+      // alert("y god y is: " + ygody);
+      if(someTerminal.verifyAnswer(answerColors)) {
+        access = true;
+        $('#colorboxes').unbind();
+        $('#myButton').unbind();
+        alert("You solved the code! " + access);
+        // return access;
+        return;
+      } else {
+        alert("You have failed!");
+      }
+    });
 
     // x = prompt(combo); // this is prompting the user ********
     // x = "none";
     x = combo;
     // $("#colorboxes").append("<h2>" + combo + "</h2>");
     // $("#show").append("<h2>" + combo + "</h2>");
-    $("#colorbox").css( "display", "block" );
+    $("#colorboxes").css( "display", "block" );
 
 
     // alert("Drumroll: ");
@@ -186,7 +233,7 @@ function challenge(someTerminal){
     '</form>';
       $("#formLine").html(myFormQ);
       // $("#questions").show();
-      $("#tformLine").css( "display", "block" );
+      $("#formLine").css( "display", "block" );
       alert("Got here!");
   } else if (someTerminal.type ==="questions") {
     var myFormQ =
@@ -202,9 +249,7 @@ function challenge(someTerminal){
       // $("#questions").show();
       $("#answer").css( "display", "block" );
   } else if (someTerminal.type ==="keypad") {
-    // (check for keys) and wait! (set interval and every ten seconds prompt them!)
-    // if they click on a key display the key they chose
-    // if they press a key display the key in the answer window
+
     var myFormK =
     '<form id="keys" class="form-group terminal row">' +
       '<div class="col-md-10 keyA">' +
@@ -221,14 +266,27 @@ function challenge(someTerminal){
 // function talkToFolks (personObject, theirPic, greet, askThem){
 // (myName, myPic, myGreet, myQuestions, myAnswer1, myAnswer2, myAnswer3, myItems, myLevel)
 function talkToFolks (personObject){
+  var key=0;
+  // var exit = false;
+  $(document).on('keydown', function(e){
+      key = e.which;
+      console.log("key is: " + key);
+      checkKey(key);
+  });
 
-  function whichKey(myKey){
+  function checkKey(myKey) {
+
+  // var myKey ="0"
     var newString = "";
-    if (myKey == 49) {
+    var newString1 = "";
+    if (myKey === 49) {
+      // alert("New String: " +newString);
+      newString ="";
+      console.log("Got my key of 49!");
       var tempQ = personObject.answer1;
       for (var i = 0; i < tempQ.length; i++) {
-        newString = tempQ[i];
-        if (newString === "X") {
+        newString += tempQ[i];
+        if (tempQ[i] === "X") {
           var temp = tempQ[i] + tempQ[i +1] + tempQ[i +2];
           if (temp === "XXX") {
             newString =  tempQ.substring(0, i) + personObject.name + tempQ.substring(i+3, tempQ.length);
@@ -236,57 +294,142 @@ function talkToFolks (personObject){
           }
         }
       }
-      $("#li1").css("color", "rgb(239, 242, 247)");
-      $("#theyReply").html("<p>" +  newString + "</p>");
+      $("#li1").css("color", "rgb(239, 142, 147)"); // was rgb(239, 242, 247)
+      $("#li2").css("color", "rgb(0,0,0)"); // was rgb(239, 242, 247)
+      $("#li3").css("color", "rgb(0,0,0)"); // was rgb(239, 242, 247)
+      $("#li4").css("color", "rgb(0,0,0)"); // was rgb(239, 242, 247)
+      $("#theyReply").empty();
+
+      $("#theyReply").html("<strong><p>" +  newString + "</p></strong>"); // what is myString now?
+      console.log("my String is: " + newString);
     }
-    if (myKey === 50) {
-        $("#theyAsk").html(personObject.answer2[0]);
-        newString = "<ol>";
+    if (myKey === 50) { // pressed 2
+      $("#li1").css("color", "rgb(0,0,0)"); // was rgb(239, 242, 247)
+      $("#li2").css("color", "rgb(239, 142, 147)"); // was rgb(239, 242, 247)
+      $("#li3").css("color", "rgb(0,0,0)"); // was rgb(239, 242, 247)
+      $("#li4").css("color", "rgb(0,0,0)"); // was rgb(239, 242, 247)
+
+      $("#people").off();
+        $("#theyReply").html("<strong>" + personObject.answer2[0] + "</strong><br>");
+        // $("#theyAsk").html(personObject.answer2[0]);
+        newString = "<ol type='a'>";
         for (var i = 1; i < 6; i++){
-          newString += "<li id='li" + i + "'>" + personObject.answer2[i] + "</li>";
+          var i1 = i +10; // ************************
+          newString += "<li id='li" + i1 + "'>" + personObject.answer2[i] + "</li>";
         }
-        newString += "<\ol>";
-        $("#li2").css("color", "rgb(239, 242, 247)");
-        $("#theyReply").html("<p>" +  newString + "</p>");
+        newString += "</ol>";
+        // $("#li2").css("color", "rgb(239, 242, 247)");
+        // $("#theyReply").append("<p>" +  newString + "</p>");
+        $("#theyReply").html("<strong>" + personObject.answer2[0] + "</strong><br>");
+        $("#theyReply").append("<p>" +  newString + "</p>");
 
-    // ["Help you do what?", "Deactivate Robots?", "Tell me where the CEO is?", "Give me a terminal code?", "Tell me what level I'm on?", "Give me a door access key?",
-    // ["No.", "Of course. Use code Blue Red Blue Green Yellow on the terminal", "Get out of here!",
-    // ["No.", "Of course not!", "Why would I tell you that?", "I don't know, I just work here.", "Sure. He's on level 5!",
-    // ["No way!", "I don't have that kind of thing!", "Why would you want that? Are you a spy?", "Pound sand, Earther!", "Sure. It's 22343."],
-    // ["Read a map, idiot.", "I don't have time for simple questions.", "Are you serious?", "Yes. It's level NNN", "Go away! I'm working!"],
-    // ["Get real!", "Sure. Here's a Yellow.", "Sure. Here's a Blue.", "Sure. Here's a Red.", "No way!", "I'm going to have to tell the boss!"]
+        $(document).on('keypress', function(e){
+            key = e.which;
+            // console.log("key is: " + key);
 
+            var x = Math.floor(Math.random() * 5) + 1;
+            if (key === 97) {
+              console.log("It's an a!");
+              console.log(personObject.answer2[6 + x + 0]); // offset is 2
+              newString1 = personObject.answer2[6 + x + 0];
+              $("#theyReply").html("<strong>" + personObject.answer2[0] + "</strong><br>");
+              $("#theyReply").append("<p>" +  newString + "</p>");
+              $("#theyReply").append("<br><strong><p>" +  newString1 + "</p></strong>");
+              $("#li11").css("color", "rgb(239, 142, 147)");
+              $("#li12").css("color", "rgb(0,0,0)");
+              $("#li13").css("color", "rgb(0,0,0)");
+              $("#li14").css("color", "rgb(0,0,0)");
+              $("#li15").css("color", "rgb(0,0,0)");
+            } else if (key === 98) {
+              console.log("It's an b!");
+              console.log(personObject.answer2[6 + x + 5]); // offset is 8
+              newString1 = personObject.answer2[6 + x + 5];
+              $("#theyReply").html("<strong>" + personObject.answer2[0] + "</strong><br>");
+              $("#theyReply").append("<p>" +  newString + "</p>");
+              $("#theyReply").append("<br><strong><p>" +  newString1 + "</p></strong>");
+              $("#li12").css("color", "rgb(239, 142, 147)");
+              $("#li11").css("color", "rgb(0,0,0)");
+              $("#li13").css("color", "rgb(0,0,0)");
+              $("#li14").css("color", "rgb(0,0,0)");
+              $("#li15").css("color", "rgb(0,0,0)");
+            } else if (key === 99) {
+              console.log("It's an c!");
+              console.log(personObject.answer2[6 + x + 10]); // offset is 14
+              newString1 = personObject.answer2[6 + x + 10];
+              $("#theyReply").html("<strong>" + personObject.answer2[0] + "</strong><br>");
+              $("#theyReply").append("<p>" +  newString + "</p>");
+              $("#theyReply").append("<br><strong><p>" +  newString1 + "</p></strong>");
+              $("#li13").css("color", "rgb(239, 142, 147)");
+              $("#li12").css("color", "rgb(0,0,0)");
+              $("#li11").css("color", "rgb(0,0,0)");
+              $("#li14").css("color", "rgb(0,0,0)");
+              $("#li15").css("color", "rgb(0,0,0)");
+            } else if (key === 100) {
+              console.log("It's an d!");
+              console.log(personObject.answer2[6 + x + 15]); // offset is 20
+              newString1 = personObject.answer2[6 + x + 15];
+              $("#theyReply").html("<strong>" + personObject.answer2[0] + "</strong><br>");
+              $("#theyReply").append("<p>" +  newString + "</p>");
+              $("#theyReply").append("<br><strong><p>" +  newString1 + "</p></strong>");
+              $("#li14").css("color", "rgb(239, 142, 147)");
+              $("#li12").css("color", "rgb(0,0,0)");
+              $("#li13").css("color", "rgb(0,0,0)");
+              $("#li11").css("color", "rgb(0,0,0)");
+              $("#li15").css("color", "rgb(0,0,0)");
+            } else if (key === 101) {
+              console.log("It's an e!");
+              console.log(personObject.answer2[6 + x +20]); // offset is 26
+              newString1 = personObject.answer2[6 + x + 20];
+              $("#theyReply").html("<strong>" + personObject.answer2[0] + "</strong><br>");
+              $("#theyReply").append("<p>" +  newString + "</p>");
+              $("#theyReply").append("<br><strong><p>" +  newString1 + "</p></strong>");
+              $("#li15").css("color", "rgb(239, 142, 147)");
+              $("#li12").css("color", "rgb(0,0,0)");
+              $("#li13").css("color", "rgb(0,0,0)");
+              $("#li14").css("color", "rgb(0,0,0)");
+              $("#li11").css("color", "rgb(0,0,0)");
+            }
+            // newString = "";
+        });
+    }
+    if (myKey === 51) {
+      var temp = (Math.floor(Math.random() * personObject.answer3.length));
+      var newString2 = personObject.answer3[temp];
+      $("#li3").css("color", "rgb(239, 142, 147)");
+      $("#li1").css("color", "rgb(0,0,0)"); // was rgb(239, 242, 247)
+      $("#li2").css("color", "rgb(0,0,0)"); // was rgb(239, 242, 247)
+      $("#li4").css("color", "rgb(0,0,0)"); // was rgb(239, 242, 247)
+
+      $("#theyReply").html("<strong><p>" +  newString2 + "</p></strong>");
     }
 
-    if (myKey === 51) {alert("answer 3");}
-  }
+    if (myKey === 52) {
+      exit = true;
+      $("#people").off();
+        $("#people").css("display", "none");
+      return;
+    }
+
+  } // end of function
 
 
-  // alert("Got here!");
   $(".container").css( "display", "none" );
   $(".decorateMe").css( "display", "block" );
   $("#picture").html( "<img src=" + personObject.pic + " alt='Their Picture' height: '100'>");
   $("#narration").html( "<p>You walk up and speak to " + personObject.name + ".</p>");
   $("#theyAsk").html("<p>" +  personObject.greet + "</p>");
   // $("#youAnswer").html("<ol><li>" +  askThem[0] + "</li><li>" +  askThem[1] + "</li><li>" +  askThem[2] + "</li></ol>");
-  $("#youAnswer").html("<ol><li id='li1'>" +  personObject.questions[0] + "</li><li id='li2'>" +  personObject.questions[1] + "</li><li id='li3'>" +  personObject.questions[2] + "</li></ol>");
+  $("#youAnswer").html("<ol><li id='li1'>" +  personObject.questions[0] + "</li><li id='li2'>" +  personObject.questions[1] + "</li><li id='li3'>" +  personObject.questions[2] + "</li><li>I'm done with you.</li></ol>");
 
-  $(function() {
-     $(window).keypress(function(e) {
-         var key = e.which;
-        //  alert("key = " + key);
-        whichKey(key);
-     });
-  });
+// talkToFolks(personObject);
 // alert("Hit the end of the function, right?");
 }
 
-
-
-
 $(document).ready(function() {
+  // var colors = ["red", "green", "blue", "yellow"];
+  // var myColor = 0;
   var dudes = [];
-  myTerminal = new ComputerTerminal("Locked", "Terminal", 1, 1, 10, 10, "colors", ["R","G","B","Y","B"], ["R","G","B","Y","B"], "OPEN", "ALARM-5");
+  myTerminal = new ComputerTerminal("Locked", "Terminal", 1, 1, 10, 10, "colors", ["B","G","B","Y","B"], ["red","green","blue","yellow","blue"], "OPEN", "ALARM-5");
   myQuestionTerminal = new ComputerTerminal("Locked", "Terminal", 1, 1, 10, 10, "questions", ["What is your favorite color?", "1. Red", "2. Blue", "3. Purple"], ["3"], "OPEN", "ALARM-5");
   myKeypadTerminal = new ComputerTerminal("Locked", "Terminal", 1, 1, 10, 10, "keypad", [1,2,3,4,5,6,7,8,9], ["3"], "OPEN", "ALARM-5");
 
@@ -294,48 +437,39 @@ $(document).ready(function() {
     dudes.push(new Denizen(myName, myPic, myGreet, myQuestions, myAnswer1, myAnswer2, myAnswer3, myItems, myLevel));
   }
 
-  // makeNewDude("Lykez Munnee", "img/drone.jpg", "What do you want?", ["Who are you?", "Can you help me?", "What happened here?!"], "My name is xxx. I'm nobody. I just work here.", ["Help you do what?",
-  // "Deactivate Robots?", "No.", "Of course. Use code Blue Red Blue Green Yellow on the terminal", "Get out of here!"],
-  // ["Tell me where the CEO is", "No.", "Of course not!", "Why would I tell you that?", "I don't know, I just work here.", "Sure. He's on level 5!"],
-  // ["Give me a terminal code?", "No way!", "I don't have that kind of thing!", "Why would you want that? Are you a spy?", "Pound sand, Earther!", "Sure. It's 22343."],
-  // ["Tell me what level I'm on?","Read a map, idiot.", "I don't have time for simple questions.", "Are you serious?", "Yes. It's level NNN", "Go away! I'm working!"],
-  // ["Give me a door access key?","Get real!", "Sure. Here's a Yellow.", "Sure. Here's a Blue.", "Sure. Here's a Red.", "No way!", "I'm going to have to tell the boss!"], ["","", "", "", ""]);
-
   makeNewDude("Lykez Munnee", "img/drone.jpg", "What do you want?", ["Who are you?", "Can you help me?", "What happened here?!"], "My name is XXX. I'm nobody. I just work here.",
   ["Help you do what?",
   "Deactivate Robots?", "Tell me where the CEO is?", "Give me a terminal code?", "Tell me what level I'm on?", "Give me a door access key?",
-  "No.", "Of course. Use code Blue Red Blue Green Yellow on the terminal", "Get out of here!",
+  "No.", "Of course. Use code Blue Red Blue Green Yellow on the terminal", "Get out of here!", "Why do you want to do that?", "I think they can't be stopped!",
   "No.", "Of course not!", "Why would I tell you that?", "I don't know, I just work here.", "Sure. He's on level 5!",
   "No way!", "I don't have that kind of thing!", "Why would you want that? Are you a spy?", "Pound sand, Earther!", "Sure. It's 22343.",
   "Read a map, idiot.", "I don't have time for simple questions.", "Are you serious?", "Yes. It's level NNN", "Go away! I'm working!",
-  "Get real!", "Sure. Here's a Yellow.", "Sure. Here's a Blue.", "Sure. Here's a Red.", "No way!", "I'm going to have to tell the boss!"], ["","", "", "", ""]);
+  "Get real!", "Sure. Here's a Yellow.", "Sure. Here's a Blue.", "Sure. Here's a Red.", "No way!", "I'm going to have to tell the boss!"],
+  ["I don't really know. I just work here. <br>", "A few months ago a lot of ships started coming here . . . <br> weird ones with no designations and no passengers.<br>", "I don't know why but the company is on lockdown and <br>we can't go back to our homes.", "They've been working us like dogs and <br>management has disappeard!"]);
 
-  alert(dudes[0].name);
-
-  // ["Help you do what?",
-  // ["Deactivate Robots?", "No.", "Of course. Use code Blue Red Blue Green Yellow on the terminal", "Get out of here!"],
-  // "Tell me where the CEO is",
-  // ["No.", "Of course not!", "Why would I tell you that?", "I don't know, I just work here.", "Sure. He's on level 5!"],
-  // "Give me a terminal code?",
-  // ["No way!", "I don't have that kind of thing!", "Why would you want that? Are you a spy?", "Pound sand, Earther!", "Sure. It's 22343."],
-  // "Tell me what level I'm on?",
-  // ["Read a map, idiot.", "I don't have time for simple questions.", "Are you serious?", "Yes. It's level NNN", "Go away! I'm working!"],
-  // "Give me a door access key?",
-  // ["Get real!", "Sure. Here's a Yellow.", "Sure. Here's a Blue.", "Sure. Here's a Red.", "No way!", "I'm going to have to tell the boss!"]
-  // ]
-
-  // var test = "";
-
-  // var myKindOfTerminal = myTerminal ;
+  var myKindOfTerminal = myTerminal ;
   // var myKindOfTerminal = myQuestionTerminal ;
-  var myKindOfTerminal = myKeypadTerminal;
-  alert("My terminal type= ")+myKindOfTerminal.type;
+  // var myKindOfTerminal = myKeypadTerminal;
 
   showQuery(myKindOfTerminal);
-  challenge(myKindOfTerminal);
-  talkToFolks(dudes[0]);
+  // // challenge(myKindOfTerminal);
+  // if (access) {
+  //   alert("Access is global!");
+  //   $("#colorboxes").css("display", "none");
+  //   $("#people").css("display", "block");
+    // talkToFolks(dudes[0]);
+  // }
 
-  // drawKeypad();
+  // $("#tell1").click(function(){
+  //
+  //   myColor++;
+  //   if(myColor > colors.length) {
+  //     myColor = 0;
+  //   }
+  //   $("#tell1").css("background-color:", colors[myColor]);
+  // });
+
+
 
   $(document).submit(function(e) {
     e.preventDefault();
@@ -345,7 +479,7 @@ $(document).ready(function() {
     // alert ("Here's my answer: " + $("#answers").val());
     // if the answer is equal to what's in the object's answer array then exit then results change to terminal and return control to the next level up?
     // clear the form;
-    alert("Moving right along...");
+    // alert("Moving right along...");
   });
 
 });
