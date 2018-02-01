@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="js/myscripts.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/mystyles.css">
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <div class = "container">
+      <div class="panel">
+
+        <div id="colorbox">
+          <div><h2>INPUT THE PROPER COLOR RESPONSE CODE:</h2></div>
+          <div class="centerMe">
+            <div id="show" class="row showClass">
+              <div class = "col-md-3 colorbox" id="show1"></div>
+              <div class = "col-md-3 colorbox" id="show2"></div>
+              <div class = "col-md-3 colorbox" id="show3"></div>
+              <div class = "col-md-3 colorbox" id="show4"></div>
+              <div class = "col-md-3 colorbox" id="show5"></div>
+            </div>
+            <div id="blankLine" class = "row showClass"></div>
+            <div id="tell" class="row showClass">
+              <div class = "col-md-3 colorbox" id="tell1"></div>
+              <div class = "col-md-3 colorbox" id="tell2"></div>
+              <div class = "col-md-3 colorbox" id="tell3"></div>
+              <div class = "col-md-3 colorbox" id="tell4"></div>
+              <div class = "col-md-3 colorbox" id="tell5"></div>
+            </div>
+            <div id="blankLine" class = "row showClass"></div>
+            <div id="formLine" class = "row showClass"></div>
+          </div>
+        </div>
+
+        <div id="question">
+          <div id="ask"></div>
+          <div id="answer"></div>
+        </div>
+
+        <div id="keyEntry">
+          <div id="keypad">
+            <div class="row">
+              <div class = "col-md-3 key" id="1"></div>
+              <div class = "col-md-3 key" id="2"></div>
+              <div class = "col-md-3 key" id="3"></div>
+            </div>
+            <div class="row">
+              <div class = "col-md-3 key" id="4"></div>
+              <div class = "col-md-3 key" id="5"></div>
+              <div class = "col-md-3 key" id="6"></div>
+            </div>
+            <div class="row">
+              <div class = "col-md-3 key" id="7"></div>
+              <div class = "col-md-3 key" id="8"></div>
+              <div class = "col-md-3 key" id="9"></div>
+            </div>
+          </div>
+          <div id="entry">
+          </div>
+        </div><!-- end key entry -->
+      </div><!-- end well -->
+    </div>
+      <div id="people" class="decorateMe row">
+        <div class="row">
+          <div id="picture" class="col-md-3"></div>
+          <div id="narration" class="col-md-7"></div>
+        </div>
+        <div class = "row ">
+          <div id="theyAsk" class="moreStuff row"></div>
+          <div id="youAnswer" class="moreStuff row"></div>
+          <div id="theyReply" class="moreStuff row"></div>
+        </div>
+      </div>
+  </body>
+</html>

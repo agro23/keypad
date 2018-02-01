@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css?family=Orbitron:400,900');
+
+html {
+  background:  url(../img/colossus.jpg)
+  no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    margin: auto;
+}
+
+body {
+  font-family: 'Orbitron', 'Open Sans',serif;
+  margin-top: 1%;
+  margin-right: 15%;
+  margin-left: 12%;
+  padding: 2em;
+  background: linear-gradient(turquoise, white);
+  position: absolute;
+  font-size: 2em;
+}
+
+.panel {
+  background: linear-gradient(rgb(110, 194, 79), rgb(78, 143, 54));
+  height: 35em;
+  padding: 2em;
+}
+
+.container {
+  margin-top: 20%;
+  margin-right: 15%;
+  padding: 2em;
+  background: linear-gradient(gray, white);
+}
+
+.well {
+  background: linear-gradient(gray, white);
+}
+
+/*.myrow{
+  border: 10px, black, dotted;
+}*/
+
+h2 {
+  border: 10px, solid, black;
+}
+
+.centerMe {
+  padding: 3em;
+}
+
+#colorbox {
+  /*visibility: hidden;*/
+  display: none;
+}
+
+#question {
+  /*visibility: hidden;*/
+  display: none;
+}
+
+#keypad {
+  /*visibility: hidden;*/
+  display: none;
+}
+
+#people {
+  /*visibility: hidden;*/
+  display: none;
+}
+
+.picture {
+  float: left;
+
+  position: absolute;
+}
+
+#narration {
+    margin: 20px 20px 0 0;
+    min-width: 200px;
+    max-width: 500px;
+    overflow: auto;
+    float: right;
+    position: relative;
+}
+
+.moreStuff {
+  margin: 20px 40px 0 0;
+  margin-left: 15px;
+}
+
+img {
+  height: 150px;
+}
+
+#theyAsk {
+  font-weight: 900;
+}
+
+.decorateMe {
+  /*margin-top: 10%;
+  margin-right: 15%;*/
+  margin: auto;
+  padding: 1em;
+  background: linear-gradient(gray, white);
+  display: none;
+}
+
+.keyA{
+  margin-top: 1em;
+  /*padding: 1em;*/
+}
+
+.colorbox {
+    border: 2px solid black;
+    margin: 5px, 5px, 5px, 5px;
+    /*padding: 1em;*/
+    width: 80px;
+    height: 70px;
+    /*background: linear-gradient(gray, white);*/
+    background-color: white;
+    text-align: center;
+    font-weight: bolder;
+    /*float:left;
+    position: relative;*/
+    /*font-style: oblique;*/
+}
+
+#blankLine {
+  margin: 1em;
+}
+
+.key {
+  border: 2px solid black;
+  margin: 5px, 5px, 5px, 5px;
+  /*padding: 1em;*/
+  width: 80px;
+  height: 70px;
+  background: linear-gradient(gray, white);
+  text-align: center;
+  font-weight: bolder;
+  /*float:left;
+  position: relative;*/
+  /*font-style: oblique;*/
+}

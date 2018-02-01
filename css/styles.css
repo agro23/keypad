@@ -1,0 +1,30 @@
+html {
+  background:  url(../img/colossus.jpg)
+  no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    margin: auto;
+}
+
+body {
+  margin top: 0;
+  margin-right: 33%;
+  margin-left: 12%
+  padding: 10em;
+  background: linear-gradient(turquoise, white);
+
+}
+
+.container {
+  margin-top: 20%;
+  margin-right: 15%;
+  padding: 5em;
+  background: linear-gradient(turquoise, white);
+
+}
+
+.well {
+  background: linear-gradient(gray, white);
+}
